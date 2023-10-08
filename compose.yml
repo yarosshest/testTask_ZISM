@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      dockerfile: "./Dockerfile.yml"
+    ports:
+      - "60102:8031"
+#    restart: always
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: "testTaskZISM"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "60103:5432"
