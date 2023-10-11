@@ -32,11 +32,12 @@ async def add_post_post(autor: Annotated[str, Form()], topic: Annotated[str, For
     await DB.add_post(autor, topic, body)
     return RedirectResponse(router.url_path_for("main_page"), status_code=303)
 
+
 @router.post("/dellPost/{post_id}",
-          responses={
-              202: {"model": Message, "description": "ok"},
-              404: {"model": Message, "description": "Not found"}
-          })
+             responses={
+                 202: {"model": Message, "description": "ok"},
+                 404: {"model": Message, "description": "Not found"}
+             })
 async def dell_post(post_id: int):
     res = await DB.dell_post(post_id)
     if res:
@@ -65,7 +66,7 @@ async def edit_post_post(post_id: int, autor: Annotated[str, Form()], topic: Ann
                          body: Annotated[str, Form()]):
     res = await DB.edit_post(post_id, autor, topic, body)
     if res:
-        return RedirectResponse("/", status_code=303)
+        return RedirectResponse(router.url_path_for("main_page"), status_code=303)
     else:
         return JSONResponse(status_code=404, content={"message": "Not found"})
 
@@ -81,10 +82,10 @@ async def main_page(request: Request):
 
 
 @router.post("/like/{post_id}",
-          responses={
-              202: {"model": Message, "description": "ok"},
-              404: {"model": Message, "description": "Not found"}}
-          )
+             responses={
+                 202: {"model": Message, "description": "ok"},
+                 404: {"model": Message, "description": "Not found"}}
+             )
 async def like_post(post_id: int):
     res = await DB.like_post(post_id)
     if res:
