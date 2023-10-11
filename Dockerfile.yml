@@ -4,6 +4,8 @@ RUN pip install --upgrade pip
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 COPY /database /app/database
-COPY config.ini . 
 COPY /app /app/app
-CMD ["uvicorn", "app.app:app", "--host", "0.0.0.0", "--port", "8031"]
+COPY config.ini .
+COPY main.py .
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+CMD [ "python", "main.py"]
