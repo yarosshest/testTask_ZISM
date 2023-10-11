@@ -8,7 +8,7 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from database.async_db import AsyncHandler as DB
-from ..models.models import Message
+from app.models.models import Message
 
 router = APIRouter(
     prefix="/web",
@@ -30,8 +30,7 @@ async def add_post_get(request: Request):
 async def add_post_post(autor: Annotated[str, Form()], topic: Annotated[str, Form()],
                         body: Annotated[str, Form()]):
     await DB.add_post(autor, topic, body)
-    return RedirectResponse("/", status_code=303)
-
+    return RedirectResponse(router.url_path_for("main_page"), status_code=303)
 
 @router.post("/dellPost/{post_id}",
           responses={

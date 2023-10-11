@@ -18,21 +18,21 @@ const postData = async (url = '', data = {}) => {
 }
 
 function like(id){
-    postData('/like/'+id)
+    postData('/web/like/'+id)
       .then((data) => {
         console.log(data);
       });
 }
 
 function dislike(id){
-    postData('/dislike/'+id)
+    postData('/web/dislike/'+id)
       .then((data) => {
         console.log(data);
       });
 }
 
 function dell(id){
-    postData('/dellPost/'+id)
+    postData('/web/dellPost/'+id)
       .then((data) => {
         console.log(data);
       });

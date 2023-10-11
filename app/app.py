@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
 from database.db_init import db_init
 from fastapi.security import OAuth2PasswordBearer
-from routers import web
+from app.routers import web
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 app = FastAPI()

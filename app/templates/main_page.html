@@ -12,7 +12,7 @@
   </head>
   <body>
     <div class="col-md-12 text-center">
-      <a href="/addPost" type="button" class="btn btn-primary">
+      <a href="/web/addPost" type="button" class="btn btn-primary">
             <img src="{{ url_for('static', path='img/add.png') }}"
             height="30">
       </a>
@@ -28,7 +28,7 @@
           <img src="{{ url_for('static', path='img/like.png') }}"
           height="30">{{item.likes}}
         </button>
-        <a href="/editPost/{{item.id}}" type="button" class="btn btn-primary">
+        <a href="/web/editPost/{{item.id}}" type="button" class="btn btn-primary">
           <img src="{{ url_for('static', path='img/edit.png') }}"
           height="30">
         </a>
