@@ -37,20 +37,14 @@ def async_to_tread(fun):
     return wrapper
 
 
-def Session(fun):
-    async def wrapper(*args):
-        engine = create_async_engine(
-            BDCONNECTION,
-            echo=False,
-            poolclass=NullPool,
-        )
-        async with async_sessionmaker(engine, expire_on_commit=True)() as session:
-            async with session.begin():
-                result = await fun(session, *args)
-                await session.commit()
-        return result
-
-    return wrapper
+async def get_session() -> AsyncSession:
+    engine = create_async_engine(
+        BDCONNECTION,
+        echo=False,
+        poolclass=NullPool,
+    )
+    async with async_sessionmaker(engine, expire_on_commit=True)() as async_session:
+        yield async_session
 
 
 class AsyncHandler:
@@ -67,7 +61,6 @@ class AsyncHandler:
         await engine.dispose()
 
     @staticmethod
-    @Session
     async def dell_post(session: AsyncSession, post_id: int) -> bool:
         q = select(Post).where(Post.id == post_id)
         result = await session.execute(q)
@@ -78,16 +71,13 @@ class AsyncHandler:
             await session.delete(post)
             return True
 
-
     @staticmethod
-    @Session
     async def add_post(session: AsyncSession, autor, topic, body: str) -> None:
         post = Post(autor, topic, body)
         session.add(post)
         await session.flush()
 
     @staticmethod
-    @Session
     async def edit_post(session: AsyncSession, post_id: int, autor, topic, body: str) -> bool:
         q = select(Post).where(Post.id == post_id)
         result = await session.execute(q)
@@ -100,9 +90,7 @@ class AsyncHandler:
             post.body = body
             return True
 
-
     @staticmethod
-    @Session
     async def get_posts(session: AsyncSession) -> List[Post]:
         q = select(Post)
         posts = (await session.execute(q)).scalars().unique().fetchall()
@@ -114,7 +102,6 @@ class AsyncHandler:
         return res
 
     @staticmethod
-    @Session
     async def get_post(session: AsyncSession, post_id: int) -> Post | None:
         q = select(Post).where(Post.id == post_id)
         post = (await session.execute(q)).scalars().unique().first()
@@ -125,7 +112,6 @@ class AsyncHandler:
             return post
 
     @staticmethod
-    @Session
     async def like_post(session: AsyncSession, post_id: int) -> bool:
         q = select(Post).where(Post.id == post_id)
         result = await session.execute(q)
@@ -137,7 +123,6 @@ class AsyncHandler:
             return True
 
     @staticmethod
-    @Session
     async def dislike_post(session: AsyncSession, post_id: int) -> bool:
         q = select(Post).where(Post.id == post_id)
         result = await session.execute(q)

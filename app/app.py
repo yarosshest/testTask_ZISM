@@ -1,3 +1,5 @@
+import os
+
 import uvicorn as uvicorn
 from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
@@ -11,8 +13,10 @@ app = FastAPI()
 app.include_router(web.router)
 app.include_router(api.router)
 
+script_dir = os.path.dirname(__file__)
+st_abs_file_path = os.path.join(script_dir, "static/")
 
-app.mount("/app/app/static", StaticFiles(directory="/app/app/static"), name="static")
+app.mount("/static", StaticFiles(directory=st_abs_file_path), name="static")
 
 
 def app_main():
