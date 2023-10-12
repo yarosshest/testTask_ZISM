@@ -1,11 +1,15 @@
 FROM python:latest
 WORKDIR /app
+ENV PYTHONPATH "${PYTHONPATH}:/app"
 RUN pip install --upgrade pip
+
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
-COPY /database /app/database
-COPY /app /app/app
+
 COPY config.ini .
 COPY main.py .
-ENV PYTHONPATH "${PYTHONPATH}:/app"
+
+COPY /database /app/database
+COPY /app /app/app
+
 CMD [ "python", "main.py"]
