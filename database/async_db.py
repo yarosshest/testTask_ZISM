@@ -1,21 +1,17 @@
 from __future__ import annotations
-import tracemalloc
-import asyncio
-from typing import List, Sequence
 
-from sqlalchemy import NullPool, delete, MetaData
+import asyncio
+import configparser
+import pathlib
+import tracemalloc
+from typing import List
+
+from sqlalchemy import NullPool, MetaData
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy import and_
-from sqlalchemy.orm import contains_eager
-
-from random import choice
 
 from database.Db_objects import Post, Base
-
-import configparser
-import pathlib
 
 meta = MetaData()
 

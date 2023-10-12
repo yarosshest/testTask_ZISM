@@ -1,10 +1,9 @@
-import asyncio
 import configparser
 import pathlib
+from asyncio import get_event_loop
 
 from database.async_db import AsyncHandler as db
 from database.async_db import get_session
-from asyncio import get_event_loop
 
 
 async def db_init():

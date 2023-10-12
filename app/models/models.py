@@ -1,5 +1,3 @@
-from typing import Any
-
 from pydantic import BaseModel
 
 from database.Db_objects import Post as DbPost

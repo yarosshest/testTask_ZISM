@@ -5,13 +5,10 @@ from fastapi import Request, Form
 from fastapi.responses import JSONResponse, HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import RedirectResponse
-from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
-from database.async_db import AsyncHandler as DB, get_session
 from app.models.models import Message
-
-import os
+from database.async_db import AsyncHandler as DB, get_session
 
 router = APIRouter(
     prefix="/web",
