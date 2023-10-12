@@ -18,7 +18,6 @@ router = APIRouter(
     tags=["web"],
 )
 
-
 templates = Jinja2Templates(directory="/app/app/templates/")
 
 

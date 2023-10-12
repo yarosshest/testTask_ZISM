@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 import uvicorn as uvicorn
@@ -20,7 +21,7 @@ app.mount("/static", StaticFiles(directory=st_abs_file_path), name="static")
 
 
 def app_main():
-    db_init()
+    asyncio.run(db_init())
     uvicorn.run(app, host="0.0.0.0", port=8031)
     # uvicorn.run('app.app.main:app', host="0.0.0.0", port=8031, workers=4)
 

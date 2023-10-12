@@ -37,13 +37,14 @@ def async_to_tread(fun):
     return wrapper
 
 
-async def get_session() -> AsyncSession:
+async def get_session():
     engine = create_async_engine(
         BDCONNECTION,
         echo=False,
         poolclass=NullPool,
     )
     async with async_sessionmaker(engine, expire_on_commit=True)() as async_session:
+        await async_session.begin()
         yield async_session
 
 
@@ -66,9 +67,11 @@ class AsyncHandler:
         result = await session.execute(q)
         post = result.scalars().unique().first()
         if post is None:
+            await session.commit()
             return False
         else:
             await session.delete(post)
+            await session.commit()
             return True
 
     @staticmethod
@@ -76,6 +79,7 @@ class AsyncHandler:
         post = Post(autor, topic, body)
         session.add(post)
         await session.flush()
+        await session.commit()
 
     @staticmethod
     async def edit_post(session: AsyncSession, post_id: int, autor, topic, body: str) -> bool:
@@ -83,11 +87,13 @@ class AsyncHandler:
         result = await session.execute(q)
         post = result.scalars().unique().first()
         if post is None:
+            await session.commit()
             return False
         else:
             post.autor = autor
             post.topic = topic
             post.body = body
+            await session.commit()
             return True
 
     @staticmethod
@@ -98,7 +104,7 @@ class AsyncHandler:
         for i in posts:
             session.expunge(i)
             res.append(i)
-
+        await session.commit()
         return res
 
     @staticmethod
@@ -106,10 +112,13 @@ class AsyncHandler:
         q = select(Post).where(Post.id == post_id)
         post = (await session.execute(q)).scalars().unique().first()
         if post is None:
+            await session.commit()
             return None
         else:
             session.expunge(post)
+            await session.commit()
             return post
+
 
     @staticmethod
     async def like_post(session: AsyncSession, post_id: int) -> bool:
@@ -117,9 +126,11 @@ class AsyncHandler:
         result = await session.execute(q)
         post = result.scalars().unique().first()
         if post is None:
+            await session.commit()
             return False
         else:
             post.likes += 1
+            await session.commit()
             return True
 
     @staticmethod
@@ -129,9 +140,11 @@ class AsyncHandler:
         post = result.scalars().unique().first()
 
         if post is None:
+            await session.commit()
             return False
         else:
             post.likes -= 1
+            await session.commit()
             return True
 
 
