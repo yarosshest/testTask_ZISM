@@ -3,12 +3,13 @@ from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
 from database.db_init import db_init
 from fastapi.security import OAuth2PasswordBearer
-from app.routers import web
+from app.routers import web, api
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 app = FastAPI()
 
 app.include_router(web.router)
+app.include_router(api.router)
 
 
 app.mount("/app/app/static", StaticFiles(directory="/app/app/static"), name="static")

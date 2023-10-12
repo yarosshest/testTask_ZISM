@@ -16,11 +16,12 @@ class Post(BaseModel):
     topic: str
     body: str
 
-    def __init__(self, post: DbPost, **data: Any):
-        super().__init__(**data)
-        self.id = post.id
-        self.likes = post.likes
-        self.autor = post.autor
-        self.topic = post.topic
-        self.body = post.body
 
+def from_db_post(post: DbPost):
+    return Post(
+        id=post.id,
+        likes=post.likes,
+        autor=post.autor,
+        topic=post.topic,
+        body=post.body
+    )
