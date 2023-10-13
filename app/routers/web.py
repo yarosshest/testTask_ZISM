@@ -1,3 +1,4 @@
+
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -8,12 +9,13 @@ from starlette.templating import Jinja2Templates
 
 from app.models.models import Message
 from database.async_db import DataBase as Db
+from database.async_db import db as db_ins
 
 router = APIRouter(
     prefix="/web",
     tags=["web"],
-)
 
+)
 templates = Jinja2Templates(directory="/app/app/templates/")
 
 
@@ -28,7 +30,7 @@ async def add_post_get(request: Request):
 async def add_post_post(autor: Annotated[str, Form()],
                         topic: Annotated[str, Form()],
                         body: Annotated[str, Form()],
-                        db: Db = Depends(Db)
+                        db: Db = Depends(db_ins)
                         ):
     await db.add_post(autor, topic, body)
     return RedirectResponse(router.url_path_for("main_page"), status_code=303)
@@ -39,7 +41,7 @@ async def add_post_post(autor: Annotated[str, Form()],
                  202: {"model": Message, "description": "ok"},
                  404: {"model": Message, "description": "Not found"}
              })
-async def dell_post(post_id: int, db: Db = Depends(Db)):
+async def dell_post(post_id: int, db: Db = Depends(db_ins)):
     res = await db.dell_post(post_id)
     if res:
         return JSONResponse(status_code=202, content={"message": "ok"})
@@ -51,7 +53,7 @@ async def dell_post(post_id: int, db: Db = Depends(Db)):
             responses={
                 404: {"model": Message, "description": "Not found"}},
             response_class=HTMLResponse)
-async def edit_post_get(request: Request, post_id: int, db: Db = Depends(Db)):
+async def edit_post_get(request: Request, post_id: int, db: Db = Depends(db_ins)):
     post = await db.get_post(post_id)
     if post is not None:
         return templates.TemplateResponse("edit_post.html", {
@@ -67,7 +69,7 @@ async def edit_post_post(post_id: int,
                          autor: Annotated[str, Form()],
                          topic: Annotated[str, Form()],
                          body: Annotated[str, Form()],
-                         db: Db = Depends(Db)
+                         db: Db = Depends(db_ins)
                          ):
     res = await db.edit_post(post_id, autor, topic, body)
     if res:
@@ -77,7 +79,7 @@ async def edit_post_post(post_id: int,
 
 
 @router.get("/", response_class=HTMLResponse)
-async def main_page(request: Request, db: Db = Depends(Db)):
+async def main_page(request: Request, db: Db = Depends(db_ins)):
     posts = await db.get_posts()
     posts = list(posts)
     return templates.TemplateResponse("main_page.html", {
@@ -91,7 +93,7 @@ async def main_page(request: Request, db: Db = Depends(Db)):
                  202: {"model": Message, "description": "ok"},
                  404: {"model": Message, "description": "Not found"}}
              )
-async def like_post(post_id: int, db: Db = Depends(Db)):
+async def like_post(post_id: int, db: Db = Depends(db_ins)):
     res = await db.like_post(post_id)
     if res:
         return JSONResponse(status_code=202, content={"message": "ok"})
@@ -104,7 +106,7 @@ async def like_post(post_id: int, db: Db = Depends(Db)):
                  202: {"model": Message, "description": "ok"},
                  404: {"model": Message, "description": "Not found"}}
              )
-async def dislike_post(post_id: int, db: Db = Depends(Db)):
+async def dislike_post(post_id: int, db: Db = Depends(db_ins)):
     res = await db.dislike_post(post_id)
     if res:
         return JSONResponse(status_code=202, content={"message": "ok"})

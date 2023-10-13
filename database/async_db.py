@@ -139,9 +139,8 @@ class DataBase:
             return True
 
 
+db = DataBase()
+
 if __name__ == "__main__":
     tracemalloc.start()
     asyncio.run(DataBase.init_db())
-    # asyncio.run(AsyncHandler.add_post("test1", "test1", "test1"))
-    # asyncio.run(AsyncHandler.add_post("test2", "test2", "test2"))
-    # asyncio.run(AsyncHandler.add_post("test3", "test3", "test3"))
