@@ -2,11 +2,11 @@ import configparser
 import pathlib
 from asyncio import get_event_loop
 
-from database.async_db import AsyncHandler as db
-from database.async_db import get_session
+from database.async_db import DataBase as Db
 
 
 async def db_init():
+    db = Db()
     await db.init_db()
 
     p = pathlib.Path(__file__).parent.parent.joinpath('config.ini')
@@ -16,15 +16,9 @@ async def db_init():
     full = config['DEFAULT']['INITFULL'] == 'False'
 
     if full:
-        gen = get_session()
-        s = anext(gen)
-        await db.add_post(await s, "test1", "test1", "test1")
-        gen = get_session()
-        s = anext(gen)
-        await db.add_post(await s, "test2", "test2", "test2")
-        gen = get_session()
-        s = anext(gen)
-        await db.add_post(await s, "test3", "test3", "test3")
+        await db.add_post("test1", "test1", "test1")
+        await db.add_post("test2", "test2", "test2")
+        await db.add_post("test3", "test3", "test3")
 
         config['DEFAULT']['INITFULL'] = 'True'
         with open('config.ini', 'w') as configfile:  # save

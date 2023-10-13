@@ -23,28 +23,24 @@ config.read(p)
 BDCONNECTION = config['DEFAULT']["BDCONNECTION"]
 
 
-def async_to_tread(fun):
-    def wrapper(*args, **kwargs):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(fun(*args, **kwargs))
-        loop.close()
+class DataBase:
+    def __init__(self):
+        print("db class inited")
 
-    return wrapper
+    def __call__(self):
+        return self
 
-
-async def get_session():
     engine = create_async_engine(
         BDCONNECTION,
         echo=False,
         poolclass=NullPool,
     )
-    async with async_sessionmaker(engine, expire_on_commit=True)() as async_session:
-        await async_session.begin()
-        yield async_session
 
+    async def get_session(self) -> AsyncSession:
+        async with async_sessionmaker(self.engine, expire_on_commit=True)() as async_session:
+            await async_session.begin()
+            return async_session
 
-class AsyncHandler:
     @staticmethod
     async def init_db() -> None:
         engine = create_async_engine(
@@ -57,8 +53,8 @@ class AsyncHandler:
 
         await engine.dispose()
 
-    @staticmethod
-    async def dell_post(session: AsyncSession, post_id: int) -> bool:
+    async def dell_post(self, post_id: int) -> bool:
+        session = await self.get_session()
         q = select(Post).where(Post.id == post_id)
         result = await session.execute(q)
         post = result.scalars().unique().first()
@@ -70,15 +66,15 @@ class AsyncHandler:
             await session.commit()
             return True
 
-    @staticmethod
-    async def add_post(session: AsyncSession, autor, topic, body: str) -> None:
+    async def add_post(self, autor, topic, body: str) -> None:
+        session = await self.get_session()
         post = Post(autor, topic, body)
         session.add(post)
         await session.flush()
         await session.commit()
 
-    @staticmethod
-    async def edit_post(session: AsyncSession, post_id: int, autor, topic, body: str) -> bool:
+    async def edit_post(self, post_id: int, autor, topic, body: str) -> bool:
+        session = await self.get_session()
         q = select(Post).where(Post.id == post_id)
         result = await session.execute(q)
         post = result.scalars().unique().first()
@@ -92,8 +88,8 @@ class AsyncHandler:
             await session.commit()
             return True
 
-    @staticmethod
-    async def get_posts(session: AsyncSession) -> List[Post]:
+    async def get_posts(self) -> List[Post]:
+        session = await self.get_session()
         q = select(Post)
         posts = (await session.execute(q)).scalars().unique().fetchall()
         res = []
@@ -103,8 +99,8 @@ class AsyncHandler:
         await session.commit()
         return res
 
-    @staticmethod
-    async def get_post(session: AsyncSession, post_id: int) -> Post | None:
+    async def get_post(self, post_id: int) -> Post | None:
+        session = await self.get_session()
         q = select(Post).where(Post.id == post_id)
         post = (await session.execute(q)).scalars().unique().first()
         if post is None:
@@ -115,9 +111,8 @@ class AsyncHandler:
             await session.commit()
             return post
 
-
-    @staticmethod
-    async def like_post(session: AsyncSession, post_id: int) -> bool:
+    async def like_post(self, post_id: int) -> bool:
+        session = await self.get_session()
         q = select(Post).where(Post.id == post_id)
         result = await session.execute(q)
         post = result.scalars().unique().first()
@@ -129,8 +124,8 @@ class AsyncHandler:
             await session.commit()
             return True
 
-    @staticmethod
-    async def dislike_post(session: AsyncSession, post_id: int) -> bool:
+    async def dislike_post(self, post_id: int) -> bool:
+        session = await self.get_session()
         q = select(Post).where(Post.id == post_id)
         result = await session.execute(q)
         post = result.scalars().unique().first()
@@ -146,7 +141,7 @@ class AsyncHandler:
 
 if __name__ == "__main__":
     tracemalloc.start()
-    asyncio.run(AsyncHandler.init_db())
+    asyncio.run(DataBase.init_db())
     # asyncio.run(AsyncHandler.add_post("test1", "test1", "test1"))
     # asyncio.run(AsyncHandler.add_post("test2", "test2", "test2"))
     # asyncio.run(AsyncHandler.add_post("test3", "test3", "test3"))

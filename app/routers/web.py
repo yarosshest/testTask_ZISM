@@ -3,12 +3,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi import Request, Form
 from fastapi.responses import JSONResponse, HTMLResponse
-from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from app.models.models import Message
-from database.async_db import AsyncHandler as DB, get_session
+from database.async_db import DataBase as Db
 
 router = APIRouter(
     prefix="/web",
@@ -29,9 +28,9 @@ async def add_post_get(request: Request):
 async def add_post_post(autor: Annotated[str, Form()],
                         topic: Annotated[str, Form()],
                         body: Annotated[str, Form()],
-                        session: AsyncSession = Depends(get_session)
+                        db: Db = Depends(Db)
                         ):
-    await DB.add_post(session, autor, topic, body)
+    await db.add_post(autor, topic, body)
     return RedirectResponse(router.url_path_for("main_page"), status_code=303)
 
 
@@ -40,8 +39,8 @@ async def add_post_post(autor: Annotated[str, Form()],
                  202: {"model": Message, "description": "ok"},
                  404: {"model": Message, "description": "Not found"}
              })
-async def dell_post(post_id: int, session: AsyncSession = Depends(get_session)):
-    res = await DB.dell_post(session, post_id)
+async def dell_post(post_id: int, db: Db = Depends(Db)):
+    res = await db.dell_post(post_id)
     if res:
         return JSONResponse(status_code=202, content={"message": "ok"})
     else:
@@ -52,8 +51,8 @@ async def dell_post(post_id: int, session: AsyncSession = Depends(get_session)):
             responses={
                 404: {"model": Message, "description": "Not found"}},
             response_class=HTMLResponse)
-async def edit_post_get(request: Request, post_id: int, session: AsyncSession = Depends(get_session)):
-    post = await DB.get_post(session, post_id)
+async def edit_post_get(request: Request, post_id: int, db: Db = Depends(Db)):
+    post = await db.get_post(post_id)
     if post is not None:
         return templates.TemplateResponse("edit_post.html", {
             "request": request,
@@ -68,9 +67,9 @@ async def edit_post_post(post_id: int,
                          autor: Annotated[str, Form()],
                          topic: Annotated[str, Form()],
                          body: Annotated[str, Form()],
-                         session: AsyncSession = Depends(get_session)
+                         db: Db = Depends(Db)
                          ):
-    res = await DB.edit_post(session, post_id, autor, topic, body)
+    res = await db.edit_post(post_id, autor, topic, body)
     if res:
         return RedirectResponse(router.url_path_for("main_page"), status_code=303)
     else:
@@ -78,8 +77,8 @@ async def edit_post_post(post_id: int,
 
 
 @router.get("/", response_class=HTMLResponse)
-async def main_page(request: Request, session: AsyncSession = Depends(get_session)):
-    posts = await DB.get_posts(session)
+async def main_page(request: Request, db: Db = Depends(Db)):
+    posts = await db.get_posts()
     posts = list(posts)
     return templates.TemplateResponse("main_page.html", {
         "request": request,
@@ -92,8 +91,8 @@ async def main_page(request: Request, session: AsyncSession = Depends(get_sessio
                  202: {"model": Message, "description": "ok"},
                  404: {"model": Message, "description": "Not found"}}
              )
-async def like_post(post_id: int, session: AsyncSession = Depends(get_session)):
-    res = await DB.like_post(session, post_id)
+async def like_post(post_id: int, db: Db = Depends(Db)):
+    res = await db.like_post(post_id)
     if res:
         return JSONResponse(status_code=202, content={"message": "ok"})
     else:
@@ -105,8 +104,8 @@ async def like_post(post_id: int, session: AsyncSession = Depends(get_session)):
                  202: {"model": Message, "description": "ok"},
                  404: {"model": Message, "description": "Not found"}}
              )
-async def dislike_post(post_id: int, session: AsyncSession = Depends(get_session)):
-    res = await DB.dislike_post(session, post_id)
+async def dislike_post(post_id: int, db: Db = Depends(Db)):
+    res = await db.dislike_post(post_id)
     if res:
         return JSONResponse(status_code=202, content={"message": "ok"})
     else:

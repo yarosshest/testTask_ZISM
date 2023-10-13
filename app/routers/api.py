@@ -5,7 +5,7 @@ from fastapi import Form
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.async_db import AsyncHandler as DB, get_session
+from database.async_db import DataBase as Db
 from app.models.models import Message, Post, from_db_post
 
 router = APIRouter(
@@ -21,9 +21,9 @@ router = APIRouter(
 async def add_post_post(autor: Annotated[str, Form()],
                         topic: Annotated[str, Form()],
                         body: Annotated[str, Form()],
-                        session: AsyncSession = Depends(get_session)
+                        db: Db = Depends(Db)
                         ):
-    await DB.add_post(session, autor, topic, body)
+    await db.add_post(autor, topic, body)
     return JSONResponse(status_code=200, content={"message": "Successful Response"})
 
 
@@ -32,8 +32,8 @@ async def add_post_post(autor: Annotated[str, Form()],
                  200: {"model": Message, "description": "Successful Response"},
                  404: {"model": Message, "description": "Post not found"}
              })
-async def dell_post(post_id: int, session: AsyncSession = Depends(get_session)):
-    res = await DB.dell_post(session, post_id)
+async def dell_post(post_id: int, db: Db = Depends(Db)):
+    res = await db.dell_post(post_id)
     if res:
         return JSONResponse(status_code=200, content={"message": "Successful Response"})
     else:
@@ -49,9 +49,9 @@ async def edit_post_post(post_id: int,
                          autor: Annotated[str, Form()],
                          topic: Annotated[str, Form()],
                          body: Annotated[str, Form()],
-                         session: AsyncSession = Depends(get_session)
+                         db: Db = Depends(Db)
                          ):
-    res = await DB.edit_post(session, post_id, autor, topic, body)
+    res = await db.edit_post(post_id, autor, topic, body)
     if res:
         return JSONResponse(status_code=200, content={"message": "Successful Response"})
     else:
@@ -63,8 +63,8 @@ async def edit_post_post(post_id: int,
                  200: {"model": Message, "description": "Successful Response"},
                  404: {"model": Message, "description": "Post not found"}}
              )
-async def like_post(post_id: int, session: AsyncSession = Depends(get_session)):
-    res = await DB.like_post(session, post_id)
+async def like_post(post_id: int, db: Db = Depends(Db)):
+    res = await db.like_post(post_id)
     if res:
         return JSONResponse(status_code=200, content={"message": "Successful Response"})
     else:
@@ -76,8 +76,8 @@ async def like_post(post_id: int, session: AsyncSession = Depends(get_session)):
                  200: {"model": Message, "description": "Successful Response"},
                  404: {"model": Message, "description": "Post not found"}}
              )
-async def dislike_post(post_id: int, session: AsyncSession = Depends(get_session)):
-    res = await DB.dislike_post(session, post_id)
+async def dislike_post(post_id: int, db: Db = Depends(Db)):
+    res = await db.dislike_post(post_id)
     if res:
         return JSONResponse(status_code=200, content={"message": "Successful Response"})
     else:
@@ -88,7 +88,7 @@ async def dislike_post(post_id: int, session: AsyncSession = Depends(get_session
             responses={
                 200: {"model": list[Post], "description": "Successful Response"}}
             )
-async def get_all_posts(session: AsyncSession = Depends(get_session)) -> list[Post]:
-    posts = await DB.get_posts(session)
+async def get_all_posts(db: Db = Depends(Db)) -> list[Post]:
+    posts = await db.get_posts()
     posts = list(map(lambda x: from_db_post(x), posts))
     return posts
