@@ -4,8 +4,8 @@ const postData = async (url = '') => {
   const response = await fetch(url, {
     // Метод, если не указывать, будет использоваться GET
     method: 'POST',
-    redirect: 'follow',
    // Заголовок запроса
+    body: JSON.stringify({username: document.getElementById('login').value, password: document.getElementById('password').value}),
     headers: {
       'Content-Type': 'application/json'
     },
@@ -23,6 +23,6 @@ const postData = async (url = '') => {
 }
 
 document.querySelector(".login-btn").addEventListener("click", (e)=>{
-    postData('/web/?'+ new URLSearchParams(new FormData(document.getElementById('form'))))
+    postData('/token/'+ new URLSearchParams(new FormData(document.getElementById('form'))))
       }
     )

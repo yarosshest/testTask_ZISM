@@ -1,5 +1,5 @@
 import os
-from datetime import timedelta
+from datetime import timedelta, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -98,7 +98,7 @@ async def posts_page(request: Request, db: Db = Depends(db_ins)):
 
 
 @router.get("/", response_class=HTMLResponse)
-async def login_page(request: Request, user: Annotated[User, Depends(get_current_user)]):
+async def login_page_get(request: Request, user: Annotated[User, Depends(get_current_user)]):
     if user is None:
         return templates.TemplateResponse("login_page.html", {
             "request": request
@@ -112,7 +112,7 @@ async def login_page(request: Request, user: Annotated[User, Depends(get_current
              responses={
                  401: {"model": Message, "description": "Incorrect username or password"}}
              )
-async def login_page(request: Request,
+async def login_page_post(request: Request,
                      login: str,
                      password: str,
                      db: Db = Depends(db_ins)
@@ -128,13 +128,19 @@ async def login_page(request: Request,
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    return RedirectResponse(router.url_path_for("posts_page"),
+
+    res = RedirectResponse(router.url_path_for("posts_page"),
                             status_code=303,
                             headers={"access_token": access_token, "token_type": "bearer"})
 
+    res.set_cookie(key="access_token", value="access_token")
+    res.set_cookie(key="token_type", value="bearer")
+
+    return res
+
 
 @router.get("/register", response_class=HTMLResponse)
-async def register_page(request: Request):
+async def register_page_get(request: Request):
     return templates.TemplateResponse("register_page.html", {
         "request": request
     })
@@ -143,7 +149,7 @@ async def register_page(request: Request):
 @router.post("/register", response_class=HTMLResponse, responses={
     409: {"model": Message, "description": "Already exist"}}
              )
-async def register_page(login: Annotated[str, Form()],
+async def register_page_post(login: Annotated[str, Form()],
                         password: Annotated[str, Form()],
                         db: Db = Depends(db_ins)
                         ):
