@@ -11,6 +11,13 @@ class Base(DeclarativeBase):
     pass
 
 
+class User(Base):
+    __tablename__ = 'User_table'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str]
+    hashed_password: Mapped[str]
+
+
 class Post(Base):
     __tablename__ = 'Post_table'
     id: Mapped[int] = mapped_column(primary_key=True)

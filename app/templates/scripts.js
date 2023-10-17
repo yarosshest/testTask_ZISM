@@ -1,6 +1,3 @@
-//document.querySelectorAll('.btn_like').forEach(el => {
-//  el.classList.add('active');
-//});
 
 const postData = async (url = '', data = {}) => {
   // Формируем запрос
