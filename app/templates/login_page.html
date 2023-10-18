@@ -13,12 +13,12 @@
   <body>
   <div class="card mx-auto" style="width: 18rem;">
     <p class="fs-4" id="err"></p>
-    <form method="POST" id="form">
+    <form method="POST" id="form" action="/token/">
       <div class="input-group mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text" id="inputGroup-autor">Login</span>
         </div>
-        <input name="login" id="login" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+        <input name="username" id="username" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
       </div>
 
       <div class="input-group mb-3">
@@ -28,11 +28,14 @@
         <input name="password" id="password" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
       </div>
 
-      <div class="col-md-12 text-center">
+      <input name="grant_type" class="form-control d-none" value="password">
+    </form>
+
+
+    <div class="col-md-12 text-center">
         <button type="button" class="btn btn-primary mx-auto login-btn">Submit</button>
         <a href="/web/register" class="btn btn-primary" role="button">Register</a>
       </div>
-    </form>
   </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

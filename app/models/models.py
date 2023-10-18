@@ -34,6 +34,11 @@ class TokenData(BaseModel):
     username: str | None = None
 
 
+class LoginForm(BaseModel):
+    username: str
+    password: str
+
+
 class User(BaseModel):
     username: str
     h_password: str
