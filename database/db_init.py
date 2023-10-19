@@ -16,9 +16,11 @@ async def db_init():
     full = config['DEFAULT']['INITFULL'] == 'False'
 
     if full:
-        await db.add_post("test1", "test1", "test1")
-        await db.add_post("test2", "test2", "test2")
-        await db.add_post("test3", "test3", "test3")
+        await db.register_user("test","test")
+        u = await db.get_user("test")
+        await db.add_post("test1", "test1", "test1", u.id)
+        await db.add_post("test2", "test2", "test2", u.id)
+        await db.add_post("test3", "test3", "test3", u.id)
 
         config['DEFAULT']['INITFULL'] = 'True'
         with open('config.ini', 'w') as configfile:  # save

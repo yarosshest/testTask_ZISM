@@ -80,10 +80,10 @@ class DataBase:
             await session.commit()
             await session.close()
 
-    async def add_post(self, autor, topic, body: str) -> None:
+    async def add_post(self, autor: str, topic: str, body: str, user_id: int) -> None:
         session = await self.get_session()
         try:
-            post = Post(autor, topic, body)
+            post = Post(autor, topic, body, user_id)
             session.add(post)
             await session.flush()
             await session.commit()
@@ -104,6 +104,19 @@ class DataBase:
                 post.body = body
                 await session.commit()
                 return True
+        finally:
+            await session.close()
+
+    async def get_user_posts(self, user_id: int) -> List[Post]:
+        session = await self.get_session()
+        try:
+            q = select(Post).where(Post.user_id == user_id)
+            posts = (await session.execute(q)).scalars().unique().fetchall()
+            res = []
+            for i in posts:
+                session.expunge(i)
+                res.append(i)
+            return res
         finally:
             await session.close()
 

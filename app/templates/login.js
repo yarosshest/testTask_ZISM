@@ -12,8 +12,10 @@ const handleSubmit = (event) => {
   })
   .then((response) => response.json())
   .then((json) => {
+    window.sessionStorage.token = json['access_token'];
     document.cookie = 'access_token=' + json['access_token'];
     document.cookie = 'token_type=' + json['token_type'];
+    window.location.replace("/web/posts");
   }).catch((err) => {
     console.log(err);
   });

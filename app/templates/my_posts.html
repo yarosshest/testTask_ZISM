@@ -10,24 +10,11 @@
     <title>main screen</title>
   </head>
   <body>
-    <div class="row">
-      <div class="col">
-        <div class="col-md-12 text-center">
-          <a href="/web/addPost" type="button" class="btn btn-primary">
-                <img src="{{ url_for('static', path='img/add.png') }}"
-                height="30">
-          </a>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="col-md-12 text-center">
-          <a href="/web/me" type="button" class="btn btn-primary">
-                <img src="{{ url_for('static', path='img/me.png') }}"
-                height="30">
-          </a>
-        </div>
-      </div>
+    <div class="col-md-12 text-center">
+      <a href="/web/addPost" type="button" class="btn btn-primary">
+            <img src="{{ url_for('static', path='img/add.png') }}"
+            height="30">
+      </a>
     </div>
     {% for item in posts %}
     <div class="col-4 mx-auto" >
@@ -39,6 +26,14 @@
         <button type="button" class="btn btn-primary btn_like" data-bs-toggle="button" data-id="{{item.id}}">
           <img src="{{ url_for('static', path='img/like.png') }}"
           height="30">{{item.likes}}
+        </button>
+        <a href="/web/editPost/{{item.id}}" type="button" class="btn btn-primary">
+          <img src="{{ url_for('static', path='img/edit.png') }}"
+          height="30">
+        </a>
+        <button type="button" class="btn btn-primary btn_dell" data-id="{{item.id}}">
+          <img src="{{ url_for('static', path='img/dell.png') }}"
+          height="30">
         </button>
       </div>
     </div>

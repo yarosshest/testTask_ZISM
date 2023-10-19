@@ -10,13 +10,15 @@ from starlette import status
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
-from app.models.models import Message, Token, User, LoginForm
+from app.models.models import Message, Token, LoginForm
 from app.security.security import (authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token,
                                    get_password_hash, get_current_user)
 from database.async_db import DataBase as Db
 from database.async_db import db as db_ins
+from database.Db_objects import User
 
 from pathlib import Path
+
 router = APIRouter(
     prefix="/web",
     tags=["web"],
@@ -39,10 +41,11 @@ async def add_post_get(request: Request):
 async def add_post_post(autor: Annotated[str, Form()],
                         topic: Annotated[str, Form()],
                         body: Annotated[str, Form()],
+                        user: Annotated[User, Depends(get_current_user)],
                         db: Db = Depends(db_ins)
                         ):
-    await db.add_post(autor, topic, body)
-    return RedirectResponse(router.url_path_for("posts_page"), status_code=303)
+    await db.add_post(autor, topic, body, user.id)
+    return RedirectResponse(router.url_path_for("my_posts_page"), status_code=303)
 
 
 @router.post("/dellPost/{post_id}",
@@ -97,6 +100,21 @@ async def posts_page(request: Request, db: Db = Depends(db_ins)):
     })
 
 
+@router.get("/me", response_class=HTMLResponse)
+async def my_posts_page(request: Request, user: Annotated[User, Depends(get_current_user)], db: Db = Depends(db_ins)):
+    if user is None:
+        return templates.TemplateResponse("login_page.html", {
+            "request": request
+        })
+
+    posts = await db.get_user_posts(user.id)
+    posts = list(posts)
+    return templates.TemplateResponse("my_posts.html", {
+        "request": request,
+        "posts": posts
+    })
+
+
 @router.get("/", response_class=HTMLResponse)
 async def login_page_get(request: Request, user: Annotated[User, Depends(get_current_user)]):
     if user is None:
@@ -104,8 +122,7 @@ async def login_page_get(request: Request, user: Annotated[User, Depends(get_cur
             "request": request
         })
 
-    if not user.disabled:
-        return RedirectResponse(router.url_path_for("posts_page"), status_code=303)
+    return RedirectResponse(router.url_path_for("posts_page"), status_code=303)
 
 
 @router.post("/", response_class=HTMLResponse,
@@ -113,10 +130,10 @@ async def login_page_get(request: Request, user: Annotated[User, Depends(get_cur
                  401: {"model": Message, "description": "Incorrect username or password"}}
              )
 async def login_page_post(request: Request,
-                     login: str,
-                     password: str,
-                     db: Db = Depends(db_ins)
-                     ):
+                          login: str,
+                          password: str,
+                          db: Db = Depends(db_ins)
+                          ):
     user = await authenticate_user(login, password, db)
 
     if not user:
@@ -130,8 +147,8 @@ async def login_page_post(request: Request,
     )
 
     res = RedirectResponse(router.url_path_for("posts_page"),
-                            status_code=303,
-                            headers={"access_token": access_token, "token_type": "bearer"})
+                           status_code=303,
+                           headers={"access_token": access_token, "token_type": "bearer"})
 
     res.set_cookie(key="access_token", value="access_token")
     res.set_cookie(key="token_type", value="bearer")
@@ -150,13 +167,13 @@ async def register_page_get(request: Request):
     409: {"model": Message, "description": "Already exist"}}
              )
 async def register_page_post(login: Annotated[str, Form()],
-                        password: Annotated[str, Form()],
-                        db: Db = Depends(db_ins)
-                        ):
+                             password: Annotated[str, Form()],
+                             db: Db = Depends(db_ins)
+                             ):
     u = await db.get_user(login)
     if u is None:
         await db.register_user(login, get_password_hash(password))
-        return RedirectResponse(router.url_path_for("login_page"), status_code=303)
+        return RedirectResponse(router.url_path_for("login_page_get"), status_code=303)
     else:
         return JSONResponse(status_code=409, content={"message": "Already exist"})
 

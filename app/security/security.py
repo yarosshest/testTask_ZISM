@@ -7,9 +7,11 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
-from app.models.models import TokenData, User
+from app.models.models import TokenData
+from app.security.OAuth2PasswordBearer import MyOAuth2PasswordBearer
 from database.async_db import DataBase as Db
 from database.async_db import db as db_ins
+from database.Db_objects import User
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -23,7 +25,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token/", auto_error=False, scheme_name="JWT")
+oauth2_scheme = MyOAuth2PasswordBearer(tokenUrl="/token/", auto_error=False)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:

@@ -38,8 +38,3 @@ class LoginForm(BaseModel):
     username: str
     password: str
 
-
-class User(BaseModel):
-    username: str
-    h_password: str
-    disabled: bool | None = None
