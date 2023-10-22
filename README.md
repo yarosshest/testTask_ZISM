@@ -4,6 +4,14 @@ docker-compose -f "название контейнера"
 
 build docker-compose -f "название контейнера" up
 
-api будет доступно по адресу: http://localhost:60102
+После успешного запуска, API будет доступно по следующему адресу:
 
-Документация к api находиться по адресу http://localhost:60102/docs 
+[http://localhost:60102/api/v1](http://localhost:60102/api/v1)
+
+Документация к API доступна по адресу:
+
+[http://localhost:60102/docs](http://localhost:60102/docs)
+
+Веб-интерфейс доступен по адресу:
+
+[http://localhost:60102/web/posts](http://localhost:60102/web/posts)
