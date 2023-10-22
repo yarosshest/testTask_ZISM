@@ -56,3 +56,10 @@ document.querySelectorAll(".btn_dell").forEach(el => {
         var o = true;
     })
 })
+
+
+function logout() {
+  document.cookie = "access_token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+  document.cookie = "token_type= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+  window.location.replace("/web/posts");
+}

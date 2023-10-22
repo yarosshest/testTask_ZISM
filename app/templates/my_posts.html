@@ -15,6 +15,17 @@
             <img src="{{ url_for('static', path='img/add.png') }}"
             height="30">
       </a>
+
+      <a href="/web/" type="button" class="btn btn-primary">
+            <img src="{{ url_for('static', path='img/backwardarrow.png') }}"
+            height="30">
+      </a>
+
+      <button type="button" class="btn btn-primary" onclick="logout()">
+            <img src="{{ url_for('static', path='img/logout.png') }}"
+            height="30">
+      </button>
+
     </div>
     {% for item in posts %}
     <div class="col-4 mx-auto" >

@@ -53,8 +53,11 @@ async def add_post_post(autor: Annotated[str, Form()],
                  202: {"model": Message, "description": "ok"},
                  404: {"model": Message, "description": "Not found"}
              })
-async def dell_post(post_id: int, db: Db = Depends(db_ins)):
-    res = await db.dell_post(post_id)
+async def dell_post(post_id: int,
+                    user: Annotated[User, Depends(get_current_user)],
+                    db: Db = Depends(db_ins),
+                    ):
+    res = await db.dell_post(post_id, user.id)
     if res:
         return JSONResponse(status_code=202, content={"message": "ok"})
     else:
@@ -81,9 +84,10 @@ async def edit_post_post(post_id: int,
                          autor: Annotated[str, Form()],
                          topic: Annotated[str, Form()],
                          body: Annotated[str, Form()],
+                         user: Annotated[User, Depends(get_current_user)],
                          db: Db = Depends(db_ins)
                          ):
-    res = await db.edit_post(post_id, autor, topic, body)
+    res = await db.edit_post(post_id, autor, topic, body, user.id)
     if res:
         return RedirectResponse(router.url_path_for("posts_page"), status_code=303)
     else:

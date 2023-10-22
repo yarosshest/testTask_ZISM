@@ -65,10 +65,10 @@ class DataBase:
 
         await engine.dispose()
 
-    async def dell_post(self, post_id: int) -> bool:
+    async def dell_post(self, post_id: int, user_id: int) -> bool:
         session = await self.get_session()
         try:
-            q = select(Post).where(Post.id == post_id)
+            q = select(Post).where(Post.id == post_id, Post.user_id == user_id)
             result = await session.execute(q)
             post = result.scalars().unique().first()
             if post is None:
@@ -90,10 +90,10 @@ class DataBase:
         finally:
             await session.close()
 
-    async def edit_post(self, post_id: int, autor, topic, body: str) -> bool:
+    async def edit_post(self, post_id: int, autor: str, topic: str, body: str, user_id: int) -> bool:
         session = await self.get_session()
         try:
-            q = select(Post).where(Post.id == post_id)
+            q = select(Post).where(Post.id == post_id, Post.user_id == user_id)
             result = await session.execute(q)
             post = result.scalars().unique().first()
             if post is None:
