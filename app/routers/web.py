@@ -5,8 +5,6 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi import Request, Form
 from fastapi.responses import JSONResponse, HTMLResponse
-from fastapi.security import OAuth2PasswordRequestForm
-from starlette import status
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
@@ -133,8 +131,7 @@ async def login_page_get(request: Request, user: Annotated[User, Depends(get_cur
              responses={
                  401: {"model": Message, "description": "Incorrect username or password"}}
              )
-async def login_page_post(request: Request,
-                          login: str,
+async def login_page_post(login: str,
                           password: str,
                           db: Db = Depends(db_ins)
                           ):
@@ -154,7 +151,7 @@ async def login_page_post(request: Request,
                            status_code=303,
                            headers={"access_token": access_token, "token_type": "bearer"})
 
-    res.set_cookie(key="access_token", value="access_token")
+    res.set_cookie(key="access_token", value=access_token)
     res.set_cookie(key="token_type", value="bearer")
 
     return res
