@@ -11,33 +11,36 @@
     <title>main screen</title>
   </head>
   <body>
-  <div class="card mx-auto" style="width: 18rem;">
-    <form method="POST">
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="inputGroup-autor">Autor</span>
-        </div>
-        <input name="autor" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
-      </div>
+  <div class="container mt-4">
+        <div class="card mx-auto" style="width: 18rem;">
+            <form method="POST">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-autor">Autor</span>
+                    </div>
+                    <input name="autor" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                </div>
 
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="inputGroup-topic">Topic</span>
-        </div>
-        <input name="topic" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
-      </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-topic">Topic</span>
+                    </div>
+                    <input name="topic" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                </div>
 
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text">Body</span>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Body</span>
+                    </div>
+                    <textarea name="body" class="form-control" aria-label="With textarea"></textarea>
+                </div>
+
+                <div class="col-md-12 text-center mt-3">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
         </div>
-        <textarea name="body" class="form-control" aria-label="With textarea"></textarea>
-      </div>
-      <div class="col-md-12 text-center">
-        <button type="submit" class="btn btn-primary mx-auto">Submit</button>
-      </div>
-    </form>
-  </div>
+    </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

@@ -38,14 +38,14 @@
                     <h5 class="card-title">Author: {{ item.author }}</h5>
                     <p class="card-text">Topic: {{ item.body }}</p>
                     <p class="card-text">{{ item.body }}</p>
-                    <button type="button" class="btn btn-primary btn_like" data-bs-toggle="button" data-id="{{ item.id }}">
+                    <button type="button" class="btn btn-primary btn-like" data-bs-toggle="button" data-id="{{ item.id }}">
                         <img src="{{ url_for('static', path='img/like.png') }}" height="30" alt="Like">
                         {{ item.likes }}
                     </button>
                     <a href="/web/editPost/{{ item.id }}" class="btn btn-primary">
                         <img src="{{ url_for('static', path='img/edit.png') }}" height="30" alt="Edit">
                     </a>
-                    <button type="button" class="btn btn-primary btn_dell" data-id="{{ item.id }}">
+                    <button type="button" class="btn btn-primary btn-dell" data-id="{{ item.id }}">
                         <img src="{{ url_for('static', path='img/dell.png') }}" height="30" alt="Delete">
                     </button>
                 </div>

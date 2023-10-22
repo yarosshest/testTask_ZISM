@@ -35,7 +35,7 @@ function dell(id){
       });
 }
 
-document.querySelectorAll(".btn_like").forEach(el => {
+document.querySelectorAll(".btn-like").forEach(el => {
     el.addEventListener("click", (e)=>{
         if (e.currentTarget.classList.contains('active')){
             dislike(e.currentTarget.getAttribute("data-id"))
@@ -49,7 +49,7 @@ document.querySelectorAll(".btn_like").forEach(el => {
     })
 })
 
-document.querySelectorAll(".btn_dell").forEach(el => {
+document.querySelectorAll(".btn-dell").forEach(el => {
     el.addEventListener("click", (e)=>{
         dell(e.currentTarget.getAttribute("data-id"));
         e.currentTarget.parentElement.parentElement.parentElement.classList.add("visually-hidden");
