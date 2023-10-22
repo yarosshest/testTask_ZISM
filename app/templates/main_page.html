@@ -10,31 +10,35 @@
     <title>main screen</title>
   </head>
   <body>
+
+    <div class="container">
     <div class="row">
       <div class="col">
-        <div class="col-md-12 text-center">
-          <a href="/web/me" type="button" class="btn btn-primary">
-                <img src="{{ url_for('static', path='img/me.png') }}"
-                height="30">
+        <div class="text-center">
+          <a href="/web/me" class="btn btn-primary">
+            <img src="{{ url_for('static', path='img/me.png') }}" alt="My Profile" height="30">
           </a>
         </div>
       </div>
     </div>
-    {% for item in posts %}
-    <div class="col-4 mx-auto" >
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Autor: {{item.autor}}</h5>
-        <p class="card-text">Topic: {{item.body}}</p>
-        <p class="card-text">{{item.body}}</p>
-        <button type="button" class="btn btn-primary btn_like" data-bs-toggle="button" data-id="{{item.id}}">
-          <img src="{{ url_for('static', path='img/like.png') }}"
-          height="30">{{item.likes}}
-        </button>
-      </div>
+
+      <div class="row">
+      {% for item in posts %}
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Author: {{ item.autor }}</h5>
+              <p class="card-text">Topic: {{ item.topic }}</p>
+              <p class="card-text">{{ item.body }}</p>
+              <button type="button" class="btn btn-primary btn-like" data-bs-toggle="button" data-id="{{ item.id }}">
+                <img src="{{ url_for('static', path='img/like.png') }}" alt="Like" height="30">
+                {{ item.likes }}
+              </button>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
     </div>
-  </div>
-    {% endfor %}
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script type="text/javascript">{% include "scripts.js" %}</script>

@@ -10,46 +10,49 @@
     <title>main screen</title>
   </head>
   <body>
-    <div class="col-md-12 text-center">
-      <a href="/web/addPost" type="button" class="btn btn-primary">
-            <img src="{{ url_for('static', path='img/add.png') }}"
-            height="30">
-      </a>
+    <div class="container">
+        <!-- Top navigation buttons -->
+        <div class="row text-center mt-3">
+            <div class="col">
+                <a href="/web/addPost" class="btn btn-primary">
+                    <img src="{{ url_for('static', path='img/add.png') }}" height="30" alt="Add Post">
+                </a>
+            </div>
+            <div class="col">
+                <a href="/web/" class="btn btn-primary">
+                    <img src="{{ url_for('static', path='img/backwardarrow.png') }}" height="30" alt="Back">
+                </a>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-primary" onclick="logout()">
+                    <img src="{{ url_for('static', path='img/logout.png') }}" height="30" alt="Logout">
+                </button>
+            </div>
+        </div>
 
-      <a href="/web/" type="button" class="btn btn-primary">
-            <img src="{{ url_for('static', path='img/backwardarrow.png') }}"
-            height="30">
-      </a>
-
-      <button type="button" class="btn btn-primary" onclick="logout()">
-            <img src="{{ url_for('static', path='img/logout.png') }}"
-            height="30">
-      </button>
-
+        <!-- Display posts -->
+        {% for item in posts %}
+        <div class="col-12 col-md-4 mx-auto mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Author: {{ item.author }}</h5>
+                    <p class="card-text">Topic: {{ item.body }}</p>
+                    <p class="card-text">{{ item.body }}</p>
+                    <button type="button" class="btn btn-primary btn_like" data-bs-toggle="button" data-id="{{ item.id }}">
+                        <img src="{{ url_for('static', path='img/like.png') }}" height="30" alt="Like">
+                        {{ item.likes }}
+                    </button>
+                    <a href="/web/editPost/{{ item.id }}" class="btn btn-primary">
+                        <img src="{{ url_for('static', path='img/edit.png') }}" height="30" alt="Edit">
+                    </a>
+                    <button type="button" class="btn btn-primary btn_dell" data-id="{{ item.id }}">
+                        <img src="{{ url_for('static', path='img/dell.png') }}" height="30" alt="Delete">
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    {% for item in posts %}
-    <div class="col-4 mx-auto" >
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Autor: {{item.autor}}</h5>
-        <p class="card-text">Topic: {{item.body}}</p>
-        <p class="card-text">{{item.body}}</p>
-        <button type="button" class="btn btn-primary btn_like" data-bs-toggle="button" data-id="{{item.id}}">
-          <img src="{{ url_for('static', path='img/like.png') }}"
-          height="30">{{item.likes}}
-        </button>
-        <a href="/web/editPost/{{item.id}}" type="button" class="btn btn-primary">
-          <img src="{{ url_for('static', path='img/edit.png') }}"
-          height="30">
-        </a>
-        <button type="button" class="btn btn-primary btn_dell" data-id="{{item.id}}">
-          <img src="{{ url_for('static', path='img/dell.png') }}"
-          height="30">
-        </button>
-      </div>
-    </div>
-  </div>
-    {% endfor %}
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script type="text/javascript">{% include "scripts.js" %}</script>

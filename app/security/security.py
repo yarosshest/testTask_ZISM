@@ -66,7 +66,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Db
             raise credentials_exception
         token_data = TokenData(username=username)
     except JWTError:
-        raise credentials_exception
+        return None
     user = await db.get_user(username=token_data.username)
     if user is None:
         raise credentials_exception
